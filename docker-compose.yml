@@ -1,61 +1,60 @@
-version: "2.1"
-
+version: '2.1'
 services:
-    cms-db:
-        image: yobasystems/alpine-mariadb:amd64
-        volumes:
-            - "./shared/db:/var/lib/mysql:Z"
-        environment:
-            - MYSQL_DATABASE=cms
-            - MYSQL_USER=cms
-            - MYSQL_RANDOM_ROOT_PASSWORD=yes
-        mem_limit: 2g
-        env_file: stack.env
-        restart: always
-    cms-xmr:
-        image: ghcr.io/xibosignage/xibo-xmr:latest
-        ports:
-            - "9505:9505"
-        restart: always
-        mem_limit: 512m
-        env_file: stack.env
-    cms-web:
-        image: ghcr.io/xibosignage/xibo-cms:latest
-        volumes:
-            - "./shared/cms/custom:/var/www/cms/custom:Z"
-            - "./shared/backup:/var/www/backup:Z"
-            - "./shared/cms/web/theme/custom:/var/www/cms/web/theme/custom:Z"
-            - "./shared/cms/library:/var/www/cms/library:Z"
-            - "./shared/cms/web/userscripts:/var/www/cms/web/userscripts:Z"
-            - "./shared/cms/ca-certs:/var/www/cms/ca-certs:Z"
-        restart: always
-        environment:
-            - MYSQL_HOST=cms-db
-            - XMR_HOST=cms-xmr
-            - CMS_USE_MEMCACHED=true
-            - MEMCACHED_HOST=cms-memcached
-        env_file: stack.env
-        ports:
-            - "80:80"
-        mem_limit: 2g
-    cms-memcached:
-        image: memcached:alpine
-        command: memcached -m 15
-        restart: always
-        mem_limit: 200M
-    cms-quickchart:
-      image: ianw/quickchart
-      restart: always
-    phpmyadmin:
-      image: phpmyadmin
-      container_name: phpmyadmin
-      environment:
-          PMA_HOST: cms-db
-          UPLOAD_LIMIT: 64M
-      restart: always
-      ports:
-          - 9002:80
-      volumes:
-          - /sessions
-      logging:
-        driver: none
+  cms-db:
+    image: 'yobasystems/alpine-mariadb:amd64'
+    volumes:
+      - './shared/db:/var/lib/mysql:Z'
+    environment:
+      - MYSQL_DATABASE=cms
+      - MYSQL_USER=cms
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    mem_limit: 2g
+    env_file: stack.env
+    restart: always
+  cms-xmr:
+    image: 'ghcr.io/xibosignage/xibo-xmr:latest'
+    ports:
+      - '9505:9505'
+    restart: always
+    mem_limit: 512m
+    env_file: stack.env
+  cms-web:
+    image: 'ghcr.io/xibosignage/xibo-cms:latest'
+    volumes:
+      - './shared/cms/custom:/var/www/cms/custom:Z'
+      - './shared/backup:/var/www/backup:Z'
+      - './shared/cms/web/theme/custom:/var/www/cms/web/theme/custom:Z'
+      - './shared/cms/library:/var/www/cms/library:Z'
+      - './shared/cms/web/userscripts:/var/www/cms/web/userscripts:Z'
+      - './shared/cms/ca-certs:/var/www/cms/ca-certs:Z'
+    restart: always
+    environment:
+      - MYSQL_HOST=cms-db
+      - XMR_HOST=cms-xmr
+      - CMS_USE_MEMCACHED=true
+      - MEMCACHED_HOST=cms-memcached
+    env_file: stack.env
+    ports:
+      - '80:80'
+    mem_limit: 2g
+  cms-memcached:
+    image: 'memcached:alpine'
+    command: memcached -m 15
+    restart: always
+    mem_limit: 200M
+  cms-quickchart:
+    image: ianw/quickchart
+    restart: always
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: cms-db
+      UPLOAD_LIMIT: 64M
+    restart: always
+    ports:
+      - '9002:80'
+    volumes:
+      - /sessions
+    logging:
+      driver: none
